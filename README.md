@@ -8,14 +8,14 @@ A API agora requer autenticação via API Key para endpoints de conversão:
 
 ```bash
 # Inclua o header Authorization em todas as requisições POST
-Authorization: Bearer md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb
+Authorization: Bearer md-api-sua-chave-super-secreta-aqui
 ```
 
 ### 🔑 **Configuração da API Key:**
 
 1. **Arquivo `.env`** (recomendado):
    ```bash
-   API_KEY=md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb
+   API_KEY=md-api-sua-chave-super-secreta-aqui
    ```
 
 2. **Variável de ambiente**:
@@ -50,7 +50,7 @@ Converte markdown para HTML puro.
 ```bash
 curl -X POST http://localhost:7000/convert \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb" \
+  -H "Authorization: Bearer md-api-sua-chave-super-secreta-aqui" \
   -d '{"markdown": "# Título\n\nEste é um **texto** em markdown."}'
 ```
 
@@ -61,7 +61,7 @@ Converte markdown para um documento HTML completo com CSS.
 ```bash
 curl -X POST http://localhost:7000/convert/full \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb" \
+  -H "Authorization: Bearer md-api-sua-chave-super-secreta-aqui" \
   -d '{"markdown": "# Meu Documento\n\nEste é um **texto** em markdown.", "title": "Meu Título"}'
 ```
 
@@ -72,7 +72,7 @@ Converte markdown diretamente para PDF no formato A4 com formatação preservada
 ```bash
 curl -X POST http://localhost:7000/convert/pdf \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb" \
+  -H "Authorization: Bearer md-api-sua-chave-super-secreta-aqui" \
   -d '{"markdown": "# Relatório\n\nConteúdo do relatório.", "title": "Meu Relatório"}' \
   --output documento.pdf
 ```
@@ -84,7 +84,7 @@ Converte HTML completo para PDF mantendo formatação exata.
 ```bash
 curl -X POST http://localhost:7000/html-to-pdf \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb" \
+  -H "Authorization: Bearer md-api-sua-chave-super-secreta-aqui" \
   -d '{"html": "<h1>Título</h1><p>Conteúdo</p>", "title": "Documento"}' \
   --output documento.pdf
 ```
