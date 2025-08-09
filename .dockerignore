@@ -1,0 +1,78 @@
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de desenvolvimento
+.git
+.gitignore
+LICENSE
+
+# Arquivos de teste e exemplos (já removidos)
+test-*.js
+exemplo-*.js
+demonstrar-*.js
+quando-usar.js
+teste-*.js
+*-exemplo.*
+*-teste.*
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.log
+quick-test.js
+
+# Diretórios de desenvolvimento
+.vscode
+.idea
+coverage
+.nyc_output
+
+# Arquivos específicos do Docker
+Dockerfile.txt
+docker-compose.override.yml
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Variáveis de ambiente locais
+.env
+.env.local
+.env.development
+.env.test
+
+# Build outputs
+dist
+build
+out
+
+# Arquivos gerados durante desenvolvimento
+*.html
+*.pdf
+
+# Scripts de build
+docker-build.*
+
+# IDE e editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Logs e temporários
+logs
+*.log
+tmp
+temp
