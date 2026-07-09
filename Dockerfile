@@ -75,9 +75,13 @@ RUN apt-get update && apt-get install -y \
     libnss3 \
     libxss1 \
     libasound2 \
-    # Fontes adicionais para PDFs
+    # Fontes adicionais para PDFs com suporte a bold/heavy weights
     fonts-noto-color-emoji \
     fonts-noto-cjk \
+    fonts-roboto \
+    fonts-open-sans \
+    fonts-liberation2 \
+    fonts-dejavu-core \
     # Otimizações para performance
     && mkdir -p /tmp/.X11-unix \
     && chmod 1777 /tmp/.X11-unix \
@@ -107,7 +111,6 @@ COPY documentation.js ./
 COPY tempFiles.js ./
 # Copiar documentação, mas não o .env (usar variáveis do container)
 COPY README.md ./
-COPY exemplo.md ./
 
 # Criar usuário não-root para segurança
 RUN groupadd -r appuser && useradd -r -g appuser appuser \

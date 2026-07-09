@@ -36,7 +36,8 @@ Authorization: Bearer md-api-sua-chave-super-secreta-aqui
 - `POST /convert` - Conversão simples
 - `POST /convert/full` - HTML completo
 - `POST /convert/pdf` - PDF direto
-- `POST /html-to-pdf` - HTML para PDF
+- `POST /html-to-pdf` - HTML para PDF (rápido)
+- `POST /html-to-pdf-full` - HTML para PDF (carregamento completo, sem timeout)
 
 ## 🎯 Endpoints Disponíveis
 
@@ -88,6 +89,32 @@ curl -X POST http://localhost:7000/html-to-pdf \
   -d '{"html": "<h1>Título</h1><p>Conteúdo</p>", "title": "Documento"}' \
   --output documento.pdf
 ```
+
+### `POST /html-to-pdf-full` - HTML para PDF com Carregamento Completo (NOVO! ⏳)
+Converte HTML complexo para PDF aguardando o carregamento **COMPLETO** de todos os recursos (imagens externas, CSS, scripts, etc). **SEM TIMEOUT** - ideal para páginas com conteúdo dinâmico ou recursos externos que demoram para carregar.
+
+**Características:**
+- ⏳ **Sem limite de tempo** - aguarda o necessário
+- 🌐 **Recursos externos** - imagens, CSS, fonts de URLs externas
+- 🔄 **Conteúdo dinâmico** - aguarda JavaScript executar completamente
+- 📊 **networkidle0** - espera até não haver mais conexões de rede
+- ✅ **Renderização garantida** - aguarda 2s extras após carregamento
+
+**Exemplo de uso:**
+```bash
+curl -X POST http://localhost:7000/html-to-pdf-full \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer md-api-sua-chave-super-secreta-aqui" \
+  -d '{"html": "<h1>Título</h1><img src=\"https://exemplo.com/imagem.jpg\"><p>Conteúdo</p>", "title": "Documento"}' \
+  --output documento.pdf
+```
+
+**Quando usar `/html-to-pdf-full`:**
+- ✅ HTML com imagens hospedadas externamente
+- ✅ Páginas com CSS/Fonts de CDNs externos
+- ✅ Conteúdo gerado dinamicamente por JavaScript
+- ✅ Páginas complexas que precisam de tempo para renderizar
+- ❌ HTML simples sem recursos externos (use `/html-to-pdf` que é mais rápido)
 
 ### `GET /health` - Status
 Verifica se a API está funcionando.
@@ -158,7 +185,9 @@ function hello() {
 ### Características dos PDFs gerados:
 - 📑 **Formato A4** padrão
 - 🎨 **Formatação preservada** exatamente como no HTML
-- 📄 **Margens adequadas** (2cm em todos os lados)
+- 📄 **Margens zeradas** - impressão como sistema nativo
+- 🖼️ **Fundos e gráficos** - cores e imagens de fundo preservadas
+- 🚫 **Sem cabeçalhos/rodapés** - impressão limpa
 - 🔧 **Quebras de página inteligentes** 
 - 💼 **Qualidade profissional**
 - 📊 **Tabelas bem formatadas**

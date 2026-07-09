@@ -54,7 +54,7 @@ module.exports = {
   PORT: process.env.PORT || 7000,
   API_KEY: process.env.API_KEY ,
   MAX_REQUEST_SIZE: process.env.MAX_REQUEST_SIZE || '10mb',
-  REQUEST_TIMEOUT: process.env.REQUEST_TIMEOUT || 15000,
+  REQUEST_TIMEOUT: process.env.REQUEST_TIMEOUT || 20000,
   
   // Diretório temporário para arquivos gerados
   TEMP_DIR: path.join(os.tmpdir(), 'markdown-api-temp'),
@@ -139,18 +139,18 @@ module.exports = {
   PDF_OPTIONS: {
     format: 'A4',
     margin: {
-      top: '2cm',
-      right: '2cm',
-      bottom: '2cm',
-      left: '2cm'
+      top: '0cm',
+      right: '0cm',
+      bottom: '0cm',
+      left: '0cm'
     },
-    printBackground: true,
+    printBackground: true,        // ✅ Imprimir gráficos e cores de fundo
     preferCSSPageSize: true,
     // Configurações otimizadas para containers
     timeout: 30000, // 30 segundos timeout
-    omitBackground: false,
+    omitBackground: false,        // ✅ Não omitir fundo
     scale: 1,
-    displayHeaderFooter: false,
+    displayHeaderFooter: false,   // ✅ Sem cabeçalhos e rodapés de impressão
     // Aguardar carregamento completo
     waitUntil: 'networkidle0'
   }

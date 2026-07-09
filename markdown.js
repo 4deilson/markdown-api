@@ -102,8 +102,13 @@ const convertToPdfHtml = (markdown, title = 'Documento') => {
     <title>${title}</title>
     <style>
         @page {
-            margin: 2cm;
+            margin: 0;
             size: A4;
+        }
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

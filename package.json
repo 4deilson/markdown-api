@@ -23,6 +23,7 @@
     "fs-extra": "^11.3.0",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
+    "multer": "^2.0.2",
     "puppeteer": "^24.15.0",
     "typescript": "^5.9.2",
     "uuid": "^9.0.1",

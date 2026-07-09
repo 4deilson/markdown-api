@@ -8,13 +8,40 @@ if (process.platform === 'win32') {
 }
 
 // Importar módulos
+
 const config = require('./config');
 const authMiddleware = require('./auth');
 const { getDocumentationHtml } = require('./documentation');
 const routes = require('./routes');
 const { setupAutoCleanup } = require('./tempFiles');
+const multer = require('multer');
+const { generatePdf } = require('./pdf');
 
 const app = express();
+const upload = multer({ dest: config.TEMP_DIR || 'tmp/' });
+// Rota para upload de arquivo HTML e conversão para PDF
+app.post('/upload-html-to-pdf', authMiddleware, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Envie um arquivo HTML no campo "file".' });
+    }
+    const fs = require('fs');
+    const path = require('path');
+    const html = fs.readFileSync(req.file.path, 'utf8');
+    // Remove arquivo temporário após leitura
+    fs.unlink(req.file.path, () => {});
+    const pdfBuffer = await generatePdf(html);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${(req.file.originalname || 'documento').replace(/\.html?$/i, '')}.pdf"`
+    });
+    res.send(pdfBuffer);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao converter HTML para PDF', details: err.message });
+  }
+});
+
+
 
 // Configurar limpeza automática de arquivos temporários
 setupAutoCleanup();
@@ -75,9 +102,12 @@ app.use((req, res) => {
       'POST /convert/full (🔐)', 
       'POST /convert/pdf (🔐)',
       'POST /html-to-pdf (🔐)',
+      'POST /html-to-pdf-full (🔐⏳)',
+      'POST /upload-html-to-pdf (🔐)',
+      'POST /debug-html (🔐🔍)',
       'GET /health'
     ],
-    note: '🔐 = Requer API Key no header Authorization'
+    note: '🔐 = Requer API Key | ⏳ = Carregamento completo | 🔍 = Debug (retorna HTML processado)'
   });
 });
 
@@ -96,22 +126,10 @@ app.listen(config.PORT, () => {
   console.log(`   📄 HTML completo: POST ${baseUrl}/convert/full`);
   console.log(`   📑 PDF direto: POST ${baseUrl}/convert/pdf`);
   console.log(`   🔗 HTML para PDF: POST ${baseUrl}/html-to-pdf`);
+  console.log(`   ⏳ HTML→PDF (full load): POST ${baseUrl}/html-to-pdf-full`);
+  console.log(`   📆 Upload HTML→PDF: POST ${baseUrl}/upload-html-to-pdf`);
+  console.log(`   🔍 Debug HTML: POST ${baseUrl}/debug-html`);
   console.log(`   ❤️ Health check: ${baseUrl}/health`);
-  console.log(`\n💡 Para usar endpoints protegidos, inclua:`);
-  console.log(`   Authorization: Bearer ${config.API_KEY}`);
-});
-
-// Iniciar servidor
-app.listen(config.PORT, () => {
-  console.log(`🚀 API rodando na porta ${config.PORT}`);
-  console.log(`📖 Documentação: http://localhost:${config.PORT}`);
-  console.log(`🔐 API Key: ${config.API_KEY}`);
-  console.log(`� Diretório temporário: ${config.TEMP_DIR}`);
-  console.log(`🔄 Converter: POST http://localhost:${config.PORT}/convert`);
-  console.log(`📄 HTML completo: POST http://localhost:${config.PORT}/convert/full`);
-  console.log(`📑 PDF direto: POST http://localhost:${config.PORT}/convert/pdf`);
-  console.log(`🔗 HTML para PDF: POST http://localhost:${config.PORT}/html-to-pdf`);
-  console.log(`❤️ Health check: http://localhost:${config.PORT}/health`);
   console.log(`\n💡 Para usar endpoints protegidos, inclua:`);
   console.log(`   Authorization: Bearer ${config.API_KEY}`);
 });

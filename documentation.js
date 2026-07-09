@@ -290,6 +290,19 @@ curl -X POST ${baseUrl}/html-to-pdf \\
             </div>
             
             <div class="endpoint">
+                <h3><span class="method post">POST</span> /html-to-pdf-full - HTML para PDF (Carregamento Completo) <span class="protected">🔐</span> ⏳</h3>
+                <p>🔄 Converte HTML complexo para PDF aguardando carregamento COMPLETO de todos os recursos (imagens, scripts, CSS externos). Ideal para páginas com conteúdo dinâmico ou recursos externos. <strong>SEM TIMEOUT</strong> - aguarda o tempo necessário.</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+curl -X POST ${baseUrl}/html-to-pdf-full \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer md-api-exemplo-1234567890abcdef" \\
+  -d '{"html": "<h1>Título</h1><img src=\"https://exemplo.com/imagem.jpg\"><p>Conteúdo</p>", "title": "Documento"}' \\
+  --output documento.pdf
+                </div>
+            </div>
+            
+            <div class="endpoint">
                 <h3><span class="method get">GET</span> /health - Status da API</h3>
                 <p>❤️ Verifica se a API está funcionando corretamente</p>
                 <div class="code-block">
