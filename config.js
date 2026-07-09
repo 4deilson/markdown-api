@@ -115,8 +115,9 @@ module.exports = {
       '--disable-plugins-discovery',
       '--disable-preconnect'
     ],
-    // Usar Chrome instalado no container
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable',
+    // Usar Chrome do container se configurado; senão deixar o Puppeteer
+    // resolver automaticamente o Chrome que ele mesmo baixou (funciona local e multiplataforma)
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     
     // Configurações otimizadas para container
     defaultViewport: {
