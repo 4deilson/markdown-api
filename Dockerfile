@@ -33,11 +33,14 @@ FROM node:20-slim
 ENV NODE_ENV=production
 ENV PORT=7000
 ENV API_KEY=md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+# Usar Chromium instalado via apt (compatível com amd64 E arm64)
+# NOTA: NÃO usar google-chrome-stable — o repositório do Google só tem pacotes amd64,
+#       causando falha "E: Unable to locate package" em servidores ARM64.
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 # Otimizações para containers
 ENV PUPPETEER_DISABLE_DEV_SHM_USAGE=true
-ENV CHROME_BIN=/usr/bin/google-chrome-stable
+ENV CHROME_BIN=/usr/bin/chromium
 ENV DISPLAY=:99
 
 # Configurações de locale UTF-8
@@ -45,23 +48,12 @@ ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ENV LANGUAGE=C.UTF-8
 
-# Instalar dependências do sistema e Chrome para Puppeteer
+# Instalar Chromium e dependências do sistema via apt do Debian.
+# O pacote "chromium" está disponível para amd64 e arm64 nos repositórios
+# oficiais do Debian, diferente do google-chrome-stable que só tem amd64.
 RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    ca-certificates \
-    procps \
-    libxss1 \
-    locales \
-    # Configurar locale UTF-8
-    && echo "C.UTF-8 UTF-8" > /etc/locale.gen \
-    && locale-gen \
-    # Adicionar repositório do Google Chrome
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    # Dependências essenciais para Puppeteer em containers
+    chromium \
+    # Dependências essenciais para Chromium em containers
     fonts-liberation \
     libasound2 \
     libatk-bridge2.0-0 \
@@ -74,7 +66,8 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-0 \
     libnss3 \
     libxss1 \
-    libasound2 \
+    procps \
+    locales \
     # Fontes adicionais para PDFs com suporte a bold/heavy weights
     fonts-noto-color-emoji \
     fonts-noto-cjk \
@@ -82,9 +75,14 @@ RUN apt-get update && apt-get install -y \
     fonts-open-sans \
     fonts-liberation2 \
     fonts-dejavu-core \
+    # Configurar locale UTF-8
+    && echo "C.UTF-8 UTF-8" > /etc/locale.gen \
+    && locale-gen \
     # Otimizações para performance
     && mkdir -p /tmp/.X11-unix \
     && chmod 1777 /tmp/.X11-unix \
+    # Criar link simbólico para compatibilidade com ambos os nomes de binário
+    && ln -sf /usr/bin/chromium /usr/bin/chromium-browser 2>/dev/null || true \
     # Cleanup
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean

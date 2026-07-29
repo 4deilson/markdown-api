@@ -12,10 +12,10 @@ services:
       - NODE_ENV=production
       - PORT=7000
       - API_KEY=md-api-ae4a14b70333ce2424fcc5db55a6c00a0255939688adf76f02f6b0e32a9261eb
-      # Configurações específicas para Puppeteer em container
-      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+      # Chromium instalado via apt (compatível com amd64 e arm64)
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
       - PUPPETEER_DISABLE_DEV_SHM_USAGE=true
-      - CHROME_BIN=/usr/bin/google-chrome-stable
+      - CHROME_BIN=/usr/bin/chromium
       - DISPLAY=:99
     restart: unless-stopped
     # Configurações de segurança para Puppeteer
@@ -43,7 +43,17 @@ services:
       - /tmp:/tmp
       # Volume para logs (opcional)
       - ./logs:/app/logs
+    # Rede compartilhada com outras aplicações do servidor.
+    # O container fica acessível pelo nome "markdown-to-pdf-api" dentro da rede rede-01.
+    networks:
+      - rede-01
     labels:
       - "traefik.enable=false"
       - "com.docker.compose.project=markdown-api"
       - "description=Markdown to PDF API with Puppeteer"
+
+networks:
+  # Rede externa já existente no servidor — permite que outros containers
+  # alcancem este serviço pelo nome do container: markdown-to-pdf-api:7000
+  rede-01:
+    external: true
